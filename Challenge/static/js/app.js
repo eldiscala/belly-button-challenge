@@ -23,19 +23,51 @@ function bar(sample) {
         orientation: 'h'
     
     };
-   
-      
-    //call plotly
-    Plotly.newPlot('bar', [trace]);  
+ 
+    // Set up layout
+    let layout = {
+        title: `Top 10 OTUs for Sample`,
+        xaxis: { title: 'Sample Values' },
+        yaxis: { title: 'OTU IDs' }
+    };
+
+    // Call Plotly
+    Plotly.newPlot('bar', [trace], layout);
+
 };
 
-//Create bubble chart
+// Create bubble chart
 function bubble(sample) {
-   console.log("bubble");
-   //call plotly
-   //Plotly.newPlot('bubble', [trace]);  
-}
+    // Get otu_ids, labels, and sample values
+    let otu_ids = sample.otu_ids;
+    let otu_labels = sample.otu_labels;
+    let sample_values = sample.sample_values;
 
+    // Log console
+    console.log(otu_ids, otu_labels, sample_values);
+
+    // Set up trace for bubble chart
+    let trace = {
+        x: otu_ids,
+        y: sample_values,
+        text: otu_labels,
+        mode: 'markers',
+        marker: {
+            size: sample_values,
+            color: otu_ids
+        }
+    };
+
+    // Set up layout
+    let layout = {
+        title: `Bubble Chart for Sample`,
+        xaxis: { title: 'OTU ID' },
+        yaxis: { title: 'Sample Values' }
+    };
+
+    // Call Plotly
+    Plotly.newPlot('bubble', [trace], layout);
+}
 
 //new function
 function getSubjectData(all_items, subject_id){
@@ -50,11 +82,20 @@ function metadata(all_metadata, subject_id) {
     let subjectMetadata = getSubjectData(all_metadata, subject_id);
     console.log(subjectMetadata);
     console.log("metadata");
-//loop through dictionary with d3
-    //let demoBox = d3.select("#sample-metadata"); 
-    //Object.entries(subjectMetadata).forEach NEED TO FINISH
-}
+    
 
+    // Select the HTML element where you want to display metadata    
+    let demoBox = d3.select("#sample-metadata"); 
+    // Clear existing content in the box
+    demoBox.html("");
+    
+    //loop through dictionary with d3  Object.entries(subjectMetadata).forEach(([key, value]) => {
+    Object.entries(subjectMetadata).forEach(([key, value]) => {
+    // Append each key-value pair to the demoBox
+    demoBox.append("p").text(`${key}: ${value}`);
+    });
+    
+}
 
 //Update plots when new sample is selected
 function optionChanged(subject_id) {
